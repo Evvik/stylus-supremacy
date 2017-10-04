@@ -19,9 +19,11 @@ function process(command, params = [], Console = console) {
 		const dryRunParams = getParam(params, ['--dryRun'])
 		const debuggingParams = getParam(params, ['--debug', '-d'])
 
+		const ignorePaths = getParam(params, ['--ignore', '-i'], 1)
+
 		const inputFiles = _.chain(params)
 			.difference(optionFilePathParams, outputDirectoryParams, replaceOriginalParams)
-			.map(path => glob.sync(path))
+			.map(path => glob.sync(path, {'ignore': ignorePaths[1].split(',') || ''}))
 			.flatten()
 			.value()
 		if (inputFiles.length === 0) {
